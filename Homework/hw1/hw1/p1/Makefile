@@ -6,12 +6,19 @@ test.out:
 	@./test.out
 	@rm -rf ./test.out
 check_compiler:
-	@COMPILER_1=$$(g++ --version 2>&1| grep g++);COMPILER_2=$$(g++ --version | grep clang);\
-	if [ "$${COMPILER_2}" != "" ];\
-	then echo "compiling using clang!! Please redirect";\
-	elif [ "$${COMPILER_1}" = "" ];\
-	then echo "Error: g++ not found";\
-	else echo "compiler check pass !!";\
+	@COMPILER=$$(g++ --version 2>&1| grep g++); \
+	if [ "$${COMPILER}" != "" ]; then \
+	    echo "compiling using g++!!"; \
+	else \
+	    COMPILER=$$(g++ --version 2>&1| grep clang); \
+	    if [ "$${COMPILER}" != "" ]; then \
+	        echo "compiling using clang!!"; \
+	    else \
+	        echo "Error: compiler not found"; \
+	    fi \
+	fi; \
+	if [ "$${COMPILER}" != "" ]; then \
+	    echo "compiler check pass !!"; \
 	fi
 	@echo
 	@echo "compiler using :"
