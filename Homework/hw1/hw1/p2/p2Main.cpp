@@ -15,6 +15,7 @@
 #include <sstream>
 #include <vector>
 #include <iomanip>
+#include <limits>
 
 int main()
 {
@@ -25,6 +26,7 @@ int main()
         std::string jsonFile;
         std::cout << "Please enter the file name: ";
         std::cin >> jsonFile;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
         if (json.read(jsonFile))
             std::cout << "File \"" << jsonFile
                       << "\" was read in successfully.\n";

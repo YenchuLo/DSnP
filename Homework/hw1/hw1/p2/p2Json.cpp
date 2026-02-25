@@ -34,7 +34,7 @@ bool Json::read(const std::string &jsonFile)
             inBraces = false;
             continue;  // Skip the line with '}'
         }
-
+        /*
         if (inBraces) {
             // Remove whitespace and commas
             line.erase(std::remove_if(line.begin(), line.end(),
@@ -56,6 +56,23 @@ bool Json::read(const std::string &jsonFile)
                 // Convert value to int
                 int value = std::stoi(valueStr);
 
+                _obj.emplace_back(std::move(key), value);
+            }
+        }
+        */
+
+        // To support more flexible formatting, we can directly parse the line for key-value pairs when we are inside the braces
+        if (inBraces) {
+            size_t firstQuote = line.find('\"');
+            size_t secondQuote = line.find('\"', firstQuote + 1);
+            size_t colonPos = line.find(':', secondQuote);
+            if (firstQuote != std::string::npos && secondQuote != std::string::npos && colonPos != std::string::npos) {
+                std::string key = line.substr(firstQuote + 1, secondQuote - firstQuote - 1);
+                std::string valueStr = line.substr(colonPos + 1);
+                valueStr.erase(std::remove_if(valueStr.begin(), valueStr.end(),
+                                      [](unsigned char c) { return std::isspace(c) || c == ','; }),
+                       valueStr.end());
+                int value = std::stoi(valueStr);
                 _obj.emplace_back(std::move(key), value);
             }
         }
