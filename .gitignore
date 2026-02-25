@@ -1,10 +1,11 @@
-# 1. 先忽略資料夾內的所有檔案
+# 1. Neglect all files by default
 *
 
-# 2. 保留所有的資料夾，這樣才能進去子目錄找檔案
+# 2. Then, unignore all directories (but not files) to allow Git to traverse into them
 !*/
 
-# 3. 破例保留您真正需要的原始碼與設定檔
+# 3. Finally, unignore specific file types and the .gitignore file itself
+!*.jpg
 !*.cpp
 !*.h
 !.gitignore
