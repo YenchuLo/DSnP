@@ -58,6 +58,60 @@ class Json
     // TODO: define constructor & member functions on your own
     bool read(const std::string &);
 
+    void print() const
+    {
+        std::cout << "{\n";
+        for (const auto &elem : _obj) {
+            if (&elem == &_obj.back()) { // without comma for the last element
+                std::cout << "  \"" << elem.getKey() << "\" : "
+                          << elem.getValue() << "\n";
+            }
+            else {
+                std::cout << "  \"" << elem.getKey() << "\" : "
+                          << elem.getValue() << ",\n";
+            }
+        }
+        std::cout << "}\n";
+    }
+
+    void add(const std::string &key, int value)
+    {
+        _obj.emplace_back(key, value);
+    }
+
+    long long sum() const
+    {
+        long long total = 0;
+        for (const auto &elem : _obj) {
+            total += elem.getValue();
+        }
+        return total;
+    }
+
+    JsonElem max() const
+    {   
+        // won't be called when the table is empty, so no need to check for empty case
+        JsonElem maxElem = _obj.front();
+        for (const auto &elem : _obj) {
+            if (elem.getValue() > maxElem.getValue()) {
+                maxElem = elem;
+            }
+        }
+        return maxElem;
+    }
+
+    JsonElem min() const
+    {   
+        // won't be called when the table is empty, so no need to check for empty case
+        JsonElem minElem = _obj.front();
+        for (const auto &elem : _obj) {
+            if (elem.getValue() < minElem.getValue()) {
+                minElem = elem;
+            }
+        }
+        return minElem;
+    }
+
     // C++17: Add structured binding support for iteration
     std::vector<JsonElem>::const_iterator begin() const noexcept
     {

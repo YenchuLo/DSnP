@@ -11,9 +11,55 @@
 #include <iostream>
 #include <string>
 
+#include <fstream>
+
 // Implement member functions of class Row and Table here
 bool Json::read(const std::string &jsonFile)
-{
+{   
+    std::ifstream ifs(jsonFile);
+    if (!ifs) {
+        return false;  // Failed to open file
+    }
+    
+    bool inBraces = false;
+    std::string line;
+    while (std::getline(ifs, line)) {
+        if (line.empty()) continue;  // Skip empty lines
+
+        if (line.find('{') != std::string::npos) {
+            inBraces = true;
+            continue;  // Skip the line with '{'
+        }
+        if (line.find('}') != std::string::npos) {
+            inBraces = false;
+            continue;  // Skip the line with '}'
+        }
+
+        if (inBraces) {
+            // Remove whitespace and commas
+            line.erase(std::remove_if(line.begin(), line.end(),
+                                      [](unsigned char c) {
+                                          return std::isspace(c) || c == ',';
+                                      }),
+                       line.end());
+
+            // Split by ':'
+            auto colonPos = line.find(':');
+            if (colonPos != std::string::npos) {
+                std::string key = line.substr(0, colonPos);
+                std::string valueStr = line.substr(colonPos + 1);
+
+                // Remove quotes from key
+                key.erase(std::remove(key.begin(), key.end(), '\"'),
+                          key.end());
+
+                // Convert value to int
+                int value = std::stoi(valueStr);
+
+                _obj.emplace_back(std::move(key), value);
+            }
+        }
+    }
     return true;  // TODO
 }
 
